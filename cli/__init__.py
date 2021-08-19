@@ -74,7 +74,7 @@ def _log_to_file(message):
     if LOGFILE is None: 
         return
 
-    logfile = open(LOGFILE, 'a')
+    logfile = open(LOGFILE, 'w')
     logfile.write(datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f') + "  " + message + "\n")
     logfile.close()
     # Rotate file is size more than 2 MB
