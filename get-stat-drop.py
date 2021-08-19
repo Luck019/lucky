@@ -30,7 +30,7 @@ def get_bgp_state(print_output):
                 if 'UP' in line.upper():
                     print "bgp is up"
                     #csr.send_metric("bgp_asn_"+as_number, 1, "BGP State")
-                    csr.send_metric("bgp_neighbour_"+bgp_neig, 1, "BGP State")
+                    csr.send_metric("bgp_neighbor_"+bgp_neig, 1, "BGP State")
                 else:
                     print "bgp is down"
                     #csr.send_metric("bgp_asn_"+as_number, 0, "BGP State")
