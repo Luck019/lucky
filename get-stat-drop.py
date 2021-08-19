@@ -20,15 +20,21 @@ def get_bgp_state(print_output):
    # print (tunnel_states)
     for tunnel_state in tunnel_states:
         for line in tunnel_state.splitlines():
+            #print(line)
             if 'remote AS' in line:
-                as_number = re.search(r'remote AS (\d+)', line).group(1)
+                #as_number = re.search(r'remote AS (\d+)', line).group(1)
+                bgp_neig = re.search(r'(\d+.\d+.\d+.\d+),  remote AS', line).group(1)
+                print(bgp_neig)
+                #print(as_number)
             if 'BGP state =' in line:
                 if 'UP' in line.upper():
                     print "bgp is up"
-                    csr.send_metric("bgp_asn_"+as_number, 1, "BGP State")
+                    #csr.send_metric("bgp_asn_"+as_number, 1, "BGP State")
+                    csr.send_metric("bgp_neighbour_"+bgp_neig, 1, "BGP State")
                 else:
                     print "bgp is down"
-                    csr.send_metric("bgp_asn_"+as_number, 0, "BGP State")
+                    #csr.send_metric("bgp_asn_"+as_number, 0, "BGP State")
+                    csr.send_metric("bgp_neighbor_"+bgp_neig, 0, "BGP State")
 
 
 
@@ -60,7 +66,7 @@ def get_stat_drop(print_output):
         entries = line.split()
         if print_output:
             print "%s --> %s/%s" % (entries[0], entries[1], entries[2])
-        csr.send_metric(entries[0], int(entries[1]), "Statistics drops")
+        #csr.send_metric(entries[0], int(entries[1]), "Statistics drops")
 
 
 def get_datapath_util(print_output):
