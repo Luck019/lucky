@@ -37,6 +37,23 @@ def get_bgp_state(print_output):
                     csr.send_metric("bgp_neighbor_"+bgp_neig, 0, "BGP State")
 
 
+                    
+                    
+                    
+def get_cpu(print_output):
+    cmd_output = execute_command("show processes cpu ", print_output)
+    for line in cmd_output.splitlines():
+       #print(line)
+            #print(line)
+        if 'CPU utilization' in line:
+            print (line)
+                #as_number = re.search(r'remote AS (\d+)', line).group(1)
+            cpu= re.search(r'five minutes: ([0-9]?[0-9])', line).group(1)
+            print(cpu)
+            csr.send_metric("cpu_utilization",cpu,"cpu_state")
+    
+
+
 
 def execute_command(command, print_output):
     cmd_output = cli.execute(command)
@@ -179,6 +196,8 @@ if __name__ == "__main__":
         show_interface(args.display)
     if args.category in ["all", "interface_summary"]:
         show_gig_interface_summary(args.display)
+    if args.category in ["all", "cpu"]:
+        get_cpu(args.display)
     if args.category in ["all", "bgp_status"]:
         get_bgp_state(args.display)
         print "bgp run"
