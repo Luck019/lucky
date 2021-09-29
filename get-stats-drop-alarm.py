@@ -11,22 +11,17 @@ cloudwatch=boto3.client('cloudwatch')
 from boto.utils import get_instance_metadata
 
 
+ ### To get instance id of host ##
+        
 def get_data():
         metadata = get_instance_metadata(timeout=2, num_retries=2)['instance-id']
-        #print(metadata)
-        #id=json.dumps(metadata, sort_keys=True,indent=4)
         return metadata
 
-
+### To get hostname of device ##
 def get_host():
         cmd_output = cli.execute("sh run | i hostname ")
         for line in cmd_output.splitlines():
-         #    print(line)
-            #print(line)
                 if 'hostname' in line:
-                    #print (line)
-                #as_number = re.search(r'remote AS (\d+)', line).group(1)
-            #cpu= re.search(r'five minutes: ([0-9]?[0-9])', line).group(1)
                     host=re.search(r'hostname (..............)', line).group(1)
                     return host
 
@@ -67,27 +62,22 @@ def print_cmd_output(command, output, print_output):
 def get_bgp_state(print_output):
     cmd_output = execute_command("show ip bgp neighbors", print_output)
     tunnel_states = cmd_output.split('BGP neighbor is ')
-   # print (tunnel_states)
     for tunnel_state in tunnel_states:
         for line in tunnel_state.splitlines():
-            #print(line)
             if 'remote AS' in line:
-                #as_number = re.search(r'remote AS (\d+)', line).group(1)
                 bgp_neig = re.search(r'(\d+.\d+.\d+.\d+),  remote AS', line).group(1)
-                print(bgp_neig)
-                #print(as_number)
+                #print(bgp_neig)
             if 'BGP state =' in line:
                 if 'UP' in line.upper():
-                    print "bgp is up"
+                    #print "bgp is up"
                     metricname="bgp_neighbor_"+bgp_neig
                     alarmname="bgp_alert"+metricname
-                    print(metricname)
+                    #print(metricname)
                     #csr.send_metric("bgp_asn_"+as_number, 1, "BGP State")
                     csr.send_metric("bgp_neighbor_"+bgp_neig, 1, "BGP State")
                     create_alarm(metricname,alarmname)
                 else:
                     print "bgp is down"
-                    #csr.send_metric("bgp_asn_"+as_number, 0, "BGP State")
                     csr.send_metric("bgp_neighbor_"+bgp_neig, 0, "BGP State")
 
 
@@ -97,11 +87,8 @@ def get_bgp_state(print_output):
 def get_cpu(print_output):
     cmd_output = execute_command("show processes cpu ", print_output)
     for line in cmd_output.splitlines():
-       #print(line)
-            #print(line)
         if 'CPU utilization' in line:
             print (line)
-                #as_number = re.search(r'remote AS (\d+)', line).group(1)
             cpu= re.search(r'five minutes: ([0-9]?[0-9])', line).group(1)
             print(cpu)
             csr.send_metric("cpu_utilization",cpu,"cpu_state")
