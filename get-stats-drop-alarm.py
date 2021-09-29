@@ -1,4 +1,3 @@
-[guestshell@guestshell ~]$ more /usr/bin/get-stat-drop.py 
 #!/bin/python2
 import cli
 import re
