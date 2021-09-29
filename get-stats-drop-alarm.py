@@ -29,17 +29,24 @@ def create_alarm(metric,name):
     instance = get_data()
     host=get_host()
     print(instance)
-    print(host)
+    ##iprint(host)
     cloudwatch.put_metric_alarm(
-    AlarmName=name,
-    ComparisonOperator='GreaterThanThreshold',
+    AlarmName=str(host+'_'+name),
+    #print(AlarmName)
+    ComparisonOperator='LessThanThreshold',
     EvaluationPeriods=1,
     MetricName=metric,
     Namespace='csr1000v',
     Period=300,
     Statistic='Average',
     Threshold=1.0,
-    ActionsEnabled=False,
+    ActionsEnabled=True,
+    OKActions=[
+        'arn:aws:sns:us-east-1:325612769595:ServiceNow_Alerts',
+    ],
+    AlarmActions=[
+        'arn:aws:sns:us-east-1:325612769595:ServiceNow_Alerts',
+    ],
     AlarmDescription='BGP check alarm ',
     Dimensions=[
         {
@@ -71,7 +78,7 @@ def get_bgp_state(print_output):
                 if 'UP' in line.upper():
                     #print "bgp is up"
                     metricname="bgp_neighbor_"+bgp_neig
-                    alarmname="bgp_alert"+metricname
+                    alarmname="bgp_"+bgp_neig
                     #print(metricname)
                     #csr.send_metric("bgp_asn_"+as_number, 1, "BGP State")
                     csr.send_metric("bgp_neighbor_"+bgp_neig, 1, "BGP State")
