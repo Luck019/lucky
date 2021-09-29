@@ -7,7 +7,7 @@ import boto3
 import json
 
 from csr_aws_guestshell import cag
-cloudwatch=boto3.client('cloudwatch')
+cloudwatch=boto3.client('cloudwatch',region_name='us-east-1')
 from boto.utils import get_instance_metadata
 
 
